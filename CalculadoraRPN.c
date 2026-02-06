@@ -55,6 +55,9 @@ int main()
 
     while (entrada)
     {
+
+        printf("\n");
+        printf("\n");
         Imprimirpila();
         printf("\n Bienvenido a tu Calculadora RPM (Pila), escoge que quieres realizar dentro de la calculadora: \n");
         printf("1. Añadir valor a la pila de la calculadora \n");
@@ -62,15 +65,24 @@ int main()
         printf("3. Limpiar ultimo valor de de la pila de la calculadora \n");
         printf("4. Limpiar todos los valores de la pila de la calculadora \n");
         printf("5. Salir de la calculadora\n");
+        printf("Seleccione la opcion a realizar: ");
         scanf("%d", &seleccion_proceso);
 
         if (seleccion_proceso == 1)
         {
             float valor;
-            printf("Ingrese el valor que quiere agregar a la pila de la calculadora: \n");
-            scanf("%f", &valor);
-            push(valor);
-            int seleccion_proceso;
+            printf("Ingrese el valor que quiere agregar a la pila de la calculadora: ");
+            if (scanf("%f", &valor) == 1)
+            {
+                push(valor);
+            }
+            else
+            {
+
+                printf("Error: solo se permiten numeros\n");
+                while ((seleccion_proceso = getchar()) != '\n' && seleccion_proceso != EOF)
+                    ;
+            }
         }
         else if (seleccion_proceso == 2)
         {
@@ -81,6 +93,7 @@ int main()
             float valor_radianes;
             float PI = 3.1416;
 
+            printf("\n");
             printf("Seleccione que operación desea realizar con los ultimos dos valores de la calculadora de pila: \n");
             printf("+ para suma \n");
             printf("- para resta \n");
@@ -91,6 +104,7 @@ int main()
             printf("c para coseno \n");
             printf("s para seno \n");
             printf("t para tangente \n");
+            printf("Operación: ");
             scanf(" %c", &operacion);
 
             switch (operacion)
