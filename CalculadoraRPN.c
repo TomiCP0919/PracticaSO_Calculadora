@@ -3,9 +3,8 @@
 #include "stdbool.h"
 
 float pila[8];
-int Tope_pila = -1;
 
-void ImprimirStack(void)
+void Imprimirpila(void)
 {
     int i = 0;
     for (i = 0; i < 8; i++)
@@ -16,28 +15,37 @@ void ImprimirStack(void)
         printf("\n");
     }
 }
-
-void push(float numero_ingreso_pila)
+void vaciarPilacompleta(void)
 {
-    if (Tope_pila < 7)
-        pila[++Tope_pila] = numero_ingreso_pila;
-    else
-        printf("Error: pila llena\n");
-}
-float pop(void)
-{
-
-    if (Tope_pila >= 0)
-        return pila[Tope_pila--];
-    else
+    for (int i = 0; i < 8; i++)
     {
-        printf("Error: pila vacia\n");
-        return 0;
+        pila[i] = 0;
     }
 }
 
-float suma(void)
+void push(float numero)
 {
+    int i;
+
+    for (i = 0; i < 7; i++)
+    {
+        pila[i] = pila[i + 1];
+    }
+
+    pila[7] = numero;
+}
+float pop(void)
+{
+    float valor = pila[7];
+    int i;
+
+    for (i = 7; i > 0; i--)
+    {
+        pila[i] = pila[i - 1];
+    }
+
+    pila[0] = 0;
+    return valor;
 }
 
 int main()
@@ -47,8 +55,8 @@ int main()
 
     while (entrada)
     {
-        ImprimirStack();
-        printf("\n Bienvenido a tu Calculadora RPM (Pila), escoge que quieres realizar dentro de la claculadora: \n");
+        Imprimirpila();
+        printf("\n Bienvenido a tu Calculadora RPM (Pila), escoge que quieres realizar dentro de la calculadora: \n");
         printf("1. Añadir valor a la pila de la calculadora \n");
         printf("2. Escoger una operación de calculadora \n");
         printf("3. Limpiar ultimo valor de de la pila de la calculadora \n");
@@ -71,7 +79,7 @@ int main()
             float b;
             float valor_grados;
             float valor_radianes;
-            float PI;
+            float PI = 3.1416;
 
             printf("Seleccione que operación desea realizar con los ultimos dos valores de la calculadora de pila: \n");
             printf("+ para suma \n");
@@ -88,7 +96,7 @@ int main()
             switch (operacion)
             {
             case '+':
-                if (Tope_pila < 1)
+                if (pila[7] == 0 && pila[6] == 0)
                 {
                     printf("Error: no hay suficientes operandos \n");
                     break;
@@ -103,7 +111,7 @@ int main()
                 }
 
             case '-':
-                if (Tope_pila < 1)
+                if (pila[7] == 0 && pila[6] == 0)
                 {
                     printf("Error: no hay suficientes operandos \n");
                     break;
@@ -119,7 +127,7 @@ int main()
 
             case '*':
 
-                if (Tope_pila < 1)
+                if (pila[7] == 0 && pila[6] == 0)
                 {
                     printf("Error: no hay suficientes operandos \n");
                     break;
@@ -133,29 +141,26 @@ int main()
                 }
 
             case '/':
-
-                if (Tope_pila < 1)
+                if (pila[7] == 0 && pila[6] == 0)
                 {
                     printf("Error: no hay suficientes operandos \n");
                     break;
                 }
-                else
+
+                b = pop();
+                if (b == 0)
                 {
-                    if (b == 0)
-                    {
-                        printf("Error: Division por 0");
-                    }
-                    else
-                    {
-                        b = pop();
-                        a = pop();
-                        push(a / b);
-                        break;
-                    }
+                    printf("Error: Division por 0\n");
+                    push(b);
+                    break;
                 }
 
+                a = pop();
+                push(a / b);
+                break;
+
             case 'r':
-                if (Tope_pila < 0)
+                if (pila[7] == 0)
                 {
                     printf("Error: pila vacia \n");
                     break;
@@ -178,7 +183,7 @@ int main()
                 break;
 
             case 'p':
-                if (Tope_pila < 1)
+                if (pila[7] == 0 && pila[6] == 0)
                 {
                     printf("Error: no hay suficientes operandos \n");
                     break;
@@ -192,38 +197,21 @@ int main()
                 }
 
             case 'c':
-                PI = 3.1416;
 
-                if (Tope_pila < 0)
-                {
-                    printf("Error: pila vacia\n");
-                    break;
-                }
                 valor_grados = pop();
                 valor_radianes = valor_grados * (PI / 180.0);
                 push(cos(valor_radianes));
                 break;
 
             case 's':
-                PI = 3.1416;
 
-                if (Tope_pila < 0)
-                {
-                    printf("Error: pila vacia\n");
-                    break;
-                }
                 valor_grados = pop();
                 valor_radianes = valor_grados * (PI / 180.0);
                 push(sin(valor_radianes));
                 break;
 
             case 't':
-                PI = 3.1416;
-                if (Tope_pila < 0)
-                {
-                    printf("Error: pila vacia\n");
-                    break;
-                }
+
                 valor_grados = pop();
 
                 if (fmod(valor_grados, 180) == 90)
@@ -249,7 +237,7 @@ int main()
         }
         else if (seleccion_proceso == 4)
         {
-            Tope_pila = -1;
+            vaciarPilacompleta();
         }
         else if (seleccion_proceso == 5)
         {
@@ -259,7 +247,9 @@ int main()
         else
         {
             printf("Esta no es una opcion dentro de la calculadora \n");
-            entrada;
+            int seleccion_proceso;
+            while ((seleccion_proceso = getchar()) != '\n' && seleccion_proceso != EOF)
+                ;
         }
     }
     return 0;
